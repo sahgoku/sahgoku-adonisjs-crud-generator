@@ -1,0 +1,14 @@
+{
+  "name": "@sahgoku/adonisjs-crud-generator",
+  "version": "2.0.22",
+  "description": "Auto generate Models/Routes/Controllers/Services for existing tables",
+  "author": "Jaurès SAH <contact@jauressah.com>",
+  "dependencies": {
+    "@adonisjs/ace": "^5.0.8",
+    "lodash": "^4.17.21",
+    "mysql": "^2.18.1",
+    "pg": "^8.6.0",
+    "pluralize": "^8.0.0",
+    "sqlite3": "^5.0.2"
+  }
+}

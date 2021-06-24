@@ -1,0 +1,19 @@
+'use strict';
+const {{pascalName}}Model = use("App/Models/{{modelFolder}}/{{pascalName}}");
+const ControllerHelper = use('ControllerHelper')
+
+class List {
+
+  constructor(transaction, user) {
+    this.transaction = transaction;
+    this.user = user;
+  }
+
+  async execute(payload) {
+      let query = {{pascalName}}Model.query();
+      ControllerHelper.populate(query, payload.populates);
+      return await ControllerHelper.search(query, payload.pagination, payload.filter);
+    }
+}
+
+module.exports = List;

@@ -1,0 +1,205 @@
+'use strict'
+const {{pascalName}} = use("App/Models/{{modelFolder}}/{{pascalName}}");
+const Controller = use('App/Controllers/Http/CommonController')
+const {{pascalName}}Create = use('App/Services/{{serviceFolder}}/create');
+const {{pascalName}}Update = use('App/Services/{{serviceFolder}}/update');
+const {{pascalName}}List = use('App/Services/{{serviceFolder}}/list');
+const {{pascalName}}Show = use('App/Services/{{serviceFolder}}/show');
+const {{pascalName}}Destroy = use('App/Services/{{serviceFolder}}/destroy');
+const Database = use('Database');
+
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
+/**
+ * Resourceful controller for interacting with {{plural}}
+ */
+class {{pascalName}}Controller extends Controller {
+  /**
+   * @swagger
+   * /api/v1/index_{{plural}}:
+   *   get:
+   *     tags:
+   *       - {{group}}
+   *     summary: Show a list of all {{plural}}
+   */
+  async index ({ request, response, auth, params }) {
+
+    // Initialisation
+    let result = {};
+    let form = {...params, ...request.all()};
+
+    // Transaction
+    const transaction = await Database.beginTransaction();
+    try {
+      const user = await auth.getUser();
+      const executor = new {{pascalName}}List(transaction, user)
+      result = await executor.execute(form);
+      await transaction.commit()
+    } catch (e) {
+      result = e
+      console.error('error=', result)
+      await transaction.rollback()
+    }
+    //Response
+    return this.apiView(response, result)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/create_{{plural}}:
+   *   post:
+   *     tags:
+   *       - {{group}}
+   *     summary: Create/save a single {{singular}}
+   *     parameters: {{parameters}}
+   */
+  async create ({ request, response, params, auth }) {
+    // Validation Rules
+    const rules = {}
+    // Validation Form
+    let form = await this.checkInputs(request, rules, params);
+
+    if (form instanceof Error) {
+      return this.serverErrorJson(response, 'INVALID_INPUTS', form.message)
+    }
+
+    //Response initialisation
+    let result = {};
+
+    //Transaction initialisation
+    const transaction = await Database.beginTransaction();
+    try {
+      const user = await auth.getUser();
+      const executor = new {{pascalName}}Create(transaction, user)
+      result = await executor.execute(form);
+      await transaction.commit()
+    } catch (e) {
+      result = e
+      console.error('error=', result)
+      await transaction.rollback()
+    }
+    //Results
+    return this.apiView(response, result)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/show_{{plural}}:
+   *   get:
+   *     tags:
+   *       - {{group}}
+   *     summary: Display a single {{singular}}
+   *     parameters:
+   *       - name: id
+   *         in: query
+   *         type: number`
+   */
+  async show({params, request, response, auth}) {
+    const rules = {
+      id: 'required'
+    }
+    let form = await this.checkInputs(request, rules, params);
+    if (form instanceof Error) {
+      return this.serverErrorJson(response, 'INVALID_INPUTS', form.message)
+    }
+    // Initialise response
+    let result = {};
+
+    // Initialise transaction
+    const transaction = await Database.beginTransaction();
+    try {
+      const user = await auth.getUser();
+      const executor = new {{pascalName}}Show(transaction, user)
+      result = await executor.execute(form);
+      await transaction.commit()
+    } catch (e) {
+      result = e
+      console.error('error=', result)
+      await transaction.rollback()
+    }
+    //Results
+    return this.apiView(response, result)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/update_{{plural}}:
+   *   put:
+   *     tags:
+   *       - {{group}}
+   *     summary: Update {{singular}} details
+   *     parameters:
+   *       {{parameters}}
+   */
+  async update({params, request, response, auth}) {
+    const rules = {
+      id: 'required',
+    }
+    let form = await this.checkInputs(request, rules, params);
+    if (form instanceof Error) {
+      return this.serverErrorJson(response, 'INVALID_INPUTS', form.message)
+    }
+
+    // Initialise response
+    let result = {};
+
+    // Initialisation de la transaction
+    const transaction = await Database.beginTransaction();
+    try {
+      const user = await auth.getUser();
+      const executor = new {{pascalName}}Update(transaction, user)
+      result = await executor.execute(form);
+      await transaction.commit()
+    } catch (e) {
+      result = e
+      console.error('error=', result)
+      await transaction.rollback()
+    }
+    //Results
+    return this.apiView(response, result)
+  }
+
+  /**
+   * @swagger
+   * /api/v1/delete_{{plural}}:
+   *   delete:
+   *     tags:
+   *       - {{group}}
+   *     summary: Delete {{singular}}
+   *     parameters:
+   *       - name: id
+   *         in: query
+   *         type: number`
+   */
+  async destroy({params, request, response, auth}) {
+    const rules = {
+      id: 'required'
+    }
+    let form = await this.checkInputs(request, rules, params);
+    if (form instanceof Error) {
+      return this.serverErrorJson(response, 'INVALID_INPUTS', form.message)
+    }
+
+    // Initialise response
+    let result = {};
+
+    // Initialise transaction
+    const transaction = await Database.beginTransaction();
+    try {
+      const user = await auth.getUser();
+      const executor = new {{pascalName}}Destroy(transaction, user)
+      result = await executor.execute(form);
+      await transaction.commit()
+    } catch (e) {
+      result = e
+      console.error('error=', result)
+      await transaction.rollback()
+    }
+    //Results
+    return this.apiView(response, result)
+  }
+}
+
+module.exports = {{pascalName}}Controller

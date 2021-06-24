@@ -1,0 +1,29 @@
+'use strict';
+const {{pascalName}}Model = use("App/Models/{{modelFolder}}/{{pascalName}}");
+const CustomException = use('CustomException')
+const _ = require('lodash');
+
+class Update {
+  constructor(transaction, user) {
+    this.transaction = transaction;
+    this.user = user;
+  }
+
+  async execute(form) {
+
+    const response = await {{pascalName}}Model.query(this.transaction)
+      .where('id', form.id).first();
+
+    if (!response) throw new CustomException("{{pascalName}} not found", 400, "{{uppercase}}_NOT_FOUND")
+
+    response.merge({
+      ..._.pick(form, {{filteredColumns}}),
+      updated_by: this.user.id,
+    })
+    await response.save(this.transaction);
+    return response;
+  }
+
+}
+
+module.exports = Update;

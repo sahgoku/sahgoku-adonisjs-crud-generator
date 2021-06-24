@@ -1,0 +1,22 @@
+'use strict';
+const {{pascalName}}Model = use("App/Models/{{modelFolder}}/{{pascalName}}");
+const _ = require('lodash');
+
+class Create {
+
+  constructor(transaction, user) {
+    this.transaction = transaction;
+    this.user = user;
+  }
+
+  async execute(form) {
+
+    return await {{pascalName}}Model.create({
+        ..._.pick(form, {{filteredColumns}}),
+        created_by: this.user.id,
+      },
+      this.transaction);
+  }
+}
+
+module.exports = Create;

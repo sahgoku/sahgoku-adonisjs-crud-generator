@@ -1,0 +1,38 @@
+'use strict'
+
+/** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
+const Model = use('Model')
+{{hash}}
+
+class {{pascalName}} extends Model {
+
+  static boot () {
+    super.boot()
+    {{hooks}}
+  }
+
+  static get primaryKey () {
+    return '{{primaryColumn}}'
+  }
+
+  static get incrementing () {
+    return {{autoIncrement}}
+  }
+
+  static get table () {
+    return '{{tableName}}'
+  }
+
+  static get hidden () {
+    return {{hiddenColumns}}
+  }
+
+  {{relationships}}
+
+  static allowedRelationships() {
+    return {{relationshipArray}}
+  }
+
+}
+
+module.exports = {{pascalName}}
