@@ -1,9 +1,10 @@
 # AdonisJS CRUD Generator
 
-[![Donate](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:contact@jauressah.com)
-[![Donate](https://img.shields.io/badge/Telegram-2CA5E0?&logo=telegram)](https://t.me/anikicommunity)
+[![Ask](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](mailto:contact@jauressah.com)
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?&logo=telegram)](https://t.me/anikicommunity)
 [![Donate](https://img.shields.io/badge/Donate-Beer-green.svg)](http://www.buymeacoffee.com/sahgoku)
-[![Donate](https://img.shields.io/badge/GitHub-100000?&logo=github&logoColor=white)](https://github.com/sahgoku/sahgoku-adonisjs-crud-generator)
+[![Downloads](https://img.shields.io/npm/dt/@sahgoku/adonisjs-crud-generator)]()
+[![Github](https://img.shields.io/badge/GitHub-100000?&logo=github&logoColor=white)](https://github.com/sahgoku/sahgoku-adonisjs-crud-generator)
 
 This package allows you easily generate essentials files for making CRUD with an database table using legacy version
 of [AdonisJS](https://legacy.adonisjs.com) app. The package generates the following:
