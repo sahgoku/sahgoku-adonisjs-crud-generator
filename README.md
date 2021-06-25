@@ -47,6 +47,7 @@ npm install @sahgoku/adonisjs-crud-generator
 ```
   ControllerHelper: '@sahgoku/adonisjs-crud-generator/Helpers/ControllerHelper',
   SearchFilterHelper: '@sahgoku/adonisjs-crud-generator/Helpers/SearchFilterHelper',
+  CustomException: '@sahgoku/adonisjs-crud-generator/Helpers/CustomException',
 ```
 
 ## Usage
