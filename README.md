@@ -51,7 +51,7 @@ npm install @sahgoku/adonisjs-crud-generator
 
 ## Usage
 
-To generate CRUD for existing table `roles`, run `adonis crud:generate roles` and follow the instructions. The following
+To generate CRUD for **existing** table `roles`, run `adonis crud:generate roles` and follow the instructions. The following
 will be created :
 
 - Controller `app/Controllers/Http/RoleController`.
