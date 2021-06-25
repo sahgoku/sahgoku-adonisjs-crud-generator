@@ -64,11 +64,11 @@ will be created :
 
 ## Available Commands
 
-- `adonis crud:controller tableName`: This creates controller file.
-- `adonis crud:model tableName`: This creates model file with relationships.
-- `adonis crud:route tableName`: This creates route file.
-- `adonis crud:service tableName`: This creates services files.
-- `adonis crud:generate tableName`: This runs all the above commands.
+- `adonis crud:generate tableName`: This run all the below commands.
+- `adonis crud:model tableName`: This create model file with relationships.
+- `adonis crud:controller tableName`: This create controller file.
+- `adonis crud:service tableName`: This create services files.
+- `adonis crud:route tableName`: This create route file.
 
 [comment]: <> (## Options)
 
