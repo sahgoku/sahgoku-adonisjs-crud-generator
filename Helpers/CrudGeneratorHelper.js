@@ -2,6 +2,21 @@ const fs = require('fs');
 const _ = require('lodash');
 let Helpers = use('Helpers');
 const pluralize = require('pluralize');
+const {promises: fsp, readdirSync, statSync} = require("fs");
+const path = require("path")
+
+const getAllFiles = function (dirPath, arrayOfFiles) {
+    let files = readdirSync(dirPath)
+    files.forEach(function (file) {
+        if (statSync(dirPath + "/" + file).isDirectory()) {
+            arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles)
+        } else {
+            if (!file.match(/([a-zA-Z0-9\s_\\.\-\(\):])+(.js)$/i)) return
+            arrayOfFiles.push(path.join(dirPath, "/", file))
+        }
+    })
+    return arrayOfFiles
+}
 
 const {
     pascalCase,
@@ -172,13 +187,13 @@ async function addModel({vm, folder, columnTypes, singular, tableName, pascalNam
         process.exit();
     }
 
-    data = await generateModelString(data, {columnTypes, singular, tableName, pascalName});
+    data = await generateModelString(vm, data, {columnTypes, singular, tableName, pascalName});
     await fs.writeFileSync(Helpers.appRoot(`app/Models/${folder + '/' + pascalName}.js`), data);
     vm.info(`${vm.icon("success")} Generate model data`);
     return true;
 }
 
-async function generateModelString(data, {columnTypes, tableName, pascalName}) {
+async function generateModelString(vm, data, {columnTypes, tableName, pascalName}) {
 
     let columns = Object.keys(columnTypes);
 
@@ -192,7 +207,7 @@ async function generateModelString(data, {columnTypes, tableName, pascalName}) {
     let relationshipArray = [];
     let hidden = [];
 
-    Object.keys(columnTypes).forEach(columnName => {
+    Object.keys(columnTypes).forEach(async columnName => {
         let column = columnTypes[columnName];
 
         if (column.primary) {
@@ -211,9 +226,10 @@ async function generateModelString(data, {columnTypes, tableName, pascalName}) {
             let camel = camelCase(pluralize.singular(column.relation_name));
 
             relationshipArray.push(camel);
+
             relationships += `
-  ${camel}() {
-     return this.belongsTo("${column.primary_table}", "${column.primary_column}", "${columnName}");
+  ${camel}() { 
+     return this.belongsTo("${getModel(vm, column.primary_table)}", "${columnName}", "${column.primary_column}");
   }
 `;
         }
@@ -236,6 +252,20 @@ async function generateModelString(data, {columnTypes, tableName, pascalName}) {
         .replace('{{hash}}', hash);
     return data;
 
+}
+
+/*Get Model name for an database table*/
+function getModel(vm, table_name) {
+    let folder = Helpers.appRoot(`/app/Models`);
+    let files = getAllFiles(folder, [])
+
+    if (_.isEmpty(files)) vm.error(`Model folder is empty!`);
+    let item = _.find(files, item => require(item).table === table_name);
+    if (!item) {
+        vm.error(`Model not found!`);
+        process.exit();
+    }
+    return 'App'.concat(item.slice(0, -3).substring(item.indexOf('/Models/')));
 }
 
 async function updateRoutesIndexContent(vm, routeFolder) {
