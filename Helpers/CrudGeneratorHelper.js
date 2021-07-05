@@ -21,7 +21,6 @@ const getAllFiles = function (dirPath, arrayOfFiles) {
 const {
     pascalCase,
     camelCase,
-    getTableColumnsAndTypes,
     validateConnection
 } = require('../Helpers/DatabaseHelper');
 
@@ -333,23 +332,38 @@ async function generateControllerString(data, {
 }) {
     /*Table Columns*/
     let filteredColumns = [];
-    // get all columns except primary
+    let requiredColumns = [];
+    // get columns except primary, created_at, updated_at
     Object.keys(columnTypes).forEach(columnName => {
         if (!columnTypes[columnName].primary) {
             if (!['created_at', 'updated_at'].includes(columnName))
                 filteredColumns.push(columnName);
         }
+        // get required columns
+        if (!columnTypes[columnName].primary &&
+            !columnTypes[columnName].nullable) {
+            requiredColumns.push(columnName);
+        }
     });
 
-    let parameters = '';
-    filteredColumns.forEach(column => {
-        parameters = parameters.concat(
-            `   \n*       - name: ${column}
-   *         in: formData
-   *         type: ${columnTypes[column].type}`)
+    /*Required Columns*/
+    let rules = 'const rules = {';
+    requiredColumns.forEach((column, index) => {
+        rules = index !== requiredColumns.length - 1 ?
+            rules.concat(`${column}: 'required',`) : rules.concat(`${column}: 'required'`)
     });
+    rules = rules.concat('}')
 
-    vm.info(`${vm.icon("success")} Generate controller data`);
+    /*Swagger*/
+    //  let parameters = '';
+    //  filteredColumns.forEach(column => {
+    //      parameters = parameters.concat(
+    //          `   \n*       - name: ${column}
+    // *         in: formData
+    // *         type: ${columnTypes[column].type}`)
+    //  });
+
+    vm.info(`${vm.icon("success")} Generate controller data.`);
     data = data.toString()
         .replace(new RegExp('{{serviceFolder}}', 'g'), serviceFolder)
         .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
@@ -357,7 +371,7 @@ async function generateControllerString(data, {
         .replace(new RegExp('{{plural}}', 'g'), plural)
         .replace(new RegExp('{{group}}', 'g'), plural.toUpperCase())
         .replace(new RegExp('{{pascalName}}', 'g'), pascalName)
-        .replace(new RegExp('{{parameters}}', 'g'), parameters)
+        .replace(new RegExp('{{rules}}', 'g'), rules)
     return data;
 }
 

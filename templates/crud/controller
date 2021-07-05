@@ -16,14 +16,7 @@ const Database = use('Database');
  * Resourceful controller for interacting with {{plural}}
  */
 class {{pascalName}}Controller extends Controller {
-  /**
-   * @swagger
-   * /api/v1/index_{{plural}}:
-   *   get:
-   *     tags:
-   *       - {{group}}
-   *     summary: Show a list of all {{plural}}
-   */
+
   async index ({ request, response, auth, params }) {
 
     // Initialisation
@@ -46,18 +39,11 @@ class {{pascalName}}Controller extends Controller {
     return this.apiView(response, result)
   }
 
-  /**
-   * @swagger
-   * /api/v1/create_{{plural}}:
-   *   post:
-   *     tags:
-   *       - {{group}}
-   *     summary: Create/save a single {{singular}}
-   *     parameters: {{parameters}}
-   */
+
   async create ({ request, response, params, auth }) {
     // Validation Rules
-    const rules = {}
+    {{rules}}
+
     // Validation Form
     let form = await this.checkInputs(request, rules, params);
 
@@ -84,18 +70,7 @@ class {{pascalName}}Controller extends Controller {
     return this.apiView(response, result)
   }
 
-  /**
-   * @swagger
-   * /api/v1/show_{{plural}}:
-   *   get:
-   *     tags:
-   *       - {{group}}
-   *     summary: Display a single {{singular}}
-   *     parameters:
-   *       - name: id
-   *         in: query
-   *         type: number`
-   */
+
   async show({params, request, response, auth}) {
     const rules = {
       id: 'required'
@@ -123,16 +98,7 @@ class {{pascalName}}Controller extends Controller {
     return this.apiView(response, result)
   }
 
-  /**
-   * @swagger
-   * /api/v1/update_{{plural}}:
-   *   put:
-   *     tags:
-   *       - {{group}}
-   *     summary: Update {{singular}} details
-   *     parameters:
-   *       {{parameters}}
-   */
+
   async update({params, request, response, auth}) {
     const rules = {
       id: 'required',
@@ -161,18 +127,7 @@ class {{pascalName}}Controller extends Controller {
     return this.apiView(response, result)
   }
 
-  /**
-   * @swagger
-   * /api/v1/delete_{{plural}}:
-   *   delete:
-   *     tags:
-   *       - {{group}}
-   *     summary: Delete {{singular}}
-   *     parameters:
-   *       - name: id
-   *         in: query
-   *         type: number`
-   */
+
   async destroy({params, request, response, auth}) {
     const rules = {
       id: 'required'
