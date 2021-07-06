@@ -37,13 +37,13 @@ class SearchFilterHelper {
 
   }
 
-  static build (query, pagination, filter) {
+  static build (query, pagination, filter, limit) {
     pagination = Object(pagination)
     const search = new SearchFilterHelper()
-    search.compose(query, filter, pagination.sortBy, pagination.descending)
+    search.compose(query, filter, pagination.sortBy, pagination.descending, limit)
   }
 
-  compose (query, filter, sortBy, descending) {
+  compose (query, filter, sortBy, descending, limit) {
     if (Object(filter) === filter)
       this.builder(this.whereBuilder(query, filter.operand), filter);
 
@@ -51,6 +51,9 @@ class SearchFilterHelper {
       query.clearOrder();
       query.orderBy(sortBy, descending ? 'DESC' : 'ASC')
     }
+
+    if(limit) query.limit(limit.limit)
+
     return query
   }
 

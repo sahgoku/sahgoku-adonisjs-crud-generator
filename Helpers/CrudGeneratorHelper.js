@@ -5,6 +5,7 @@ const pluralize = require('pluralize');
 const {promises: fsp, readdirSync, statSync} = require("fs");
 const path = require("path")
 
+//Get all js files inside folder
 const getAllFiles = function (dirPath, arrayOfFiles) {
     let files = readdirSync(dirPath)
     files.forEach(function (file) {
