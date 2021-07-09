@@ -19,6 +19,7 @@ of [AdonisJS](https://legacy.adonisjs.com) app. The package generates the follow
 [comment]: <> (- MySQL)
 
 ![](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![](https://img.shields.io/badge/MySQL-FF7600?style=for-the-badge&logo=mysql&logoColor=white)
 
 [comment]: <> (- SQLite)
 

@@ -28,11 +28,18 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
 
     /*Table Columns*/
     let filteredColumns = [];
+    let primary = {};
+
     // get all columns except primary
     Object.keys(columnTypes).forEach(columnName => {
         if (!columnTypes[columnName].primary) {
             if (!['created_at', 'updated_at', 'created_by', 'updated_by'].includes(columnName))
                 filteredColumns.push(columnName);
+        }
+
+        if (columnTypes[columnName].primary) {
+            primary = columnTypes[columnName];
+            primary.name = columnName;
         }
     });
 
@@ -53,6 +60,7 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
         let serviceCreate = Helpers.appRoot(`app/Services/${serviceFolder}/create.js`);
         data = await fs.readFileSync(createServiceFile);
         data = data.toString()
+            .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
             .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
             .replace(new RegExp('{{filteredColumns}}', 'g'), `['${filteredColumns.join("','")}']`)
             .replace(new RegExp('{{pascalName}}', 'g'), pascalName)
@@ -63,6 +71,7 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
         let serviceDestroy = Helpers.appRoot(`app/Services/${serviceFolder}/destroy.js`);
         data = await fs.readFileSync(destroyServiceFile);
         data = data.toString()
+            .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
             .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
             .replace(new RegExp('{{pascalName}}', 'g'), pascalName)
             .replace(new RegExp('{{uppercase}}', 'g'), pascalName.toUpperCase())
@@ -80,6 +89,7 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
         let serviceShow = Helpers.appRoot(`app/Services/${serviceFolder}/show.js`);
         data = await fs.readFileSync(showServiceFile);
         data = data.toString()
+            .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
             .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
             .replace(new RegExp('{{pascalName}}', 'g'), pascalName)
             .replace(new RegExp('{{uppercase}}', 'g'), pascalName.toUpperCase())
@@ -89,6 +99,7 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
         let serviceUpdate = Helpers.appRoot(`app/Services/${serviceFolder}/update.js`);
         data = await fs.readFileSync(updateServiceFile);
         data = data.toString()
+            .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
             .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
             .replace(new RegExp('{{filteredColumns}}', 'g'), `['${filteredColumns.join("','")}']`)
             .replace(new RegExp('{{pascalName}}', 'g'), pascalName)
@@ -107,7 +118,17 @@ async function addServices({vm, serviceFolder, columnTypes, modelFolder, plural,
 
 }
 
-async function addRoutes({vm, folder, singular, plural, pascalName}) {
+async function addRoutes({vm, folder, columnTypes, singular, plural, pascalName}) {
+
+    let primary = {};
+
+    // get primary column
+    Object.keys(columnTypes).forEach(columnName => {
+        if (columnTypes[columnName].primary) {
+            primary = columnTypes[columnName];
+            primary.name = columnName;
+        }
+    });
 
     // Route Table folder
     let routeFolder = await vm.ask(`Enter routes folder (eg: auth) : `);
@@ -128,6 +149,7 @@ async function addRoutes({vm, folder, singular, plural, pascalName}) {
         let route = Helpers.appRoot(`start/routes/${routeFolder}/routes.${plural}.js`)
         let data = await fs.readFileSync(routeFile, 'utf8');
         data = data.toString()
+            .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
             .replace(new RegExp('{{group}}', 'g'), plural.toUpperCase())
             .replace(new RegExp('{{middleware}}', 'g'), middleware)
             .replace(new RegExp('{{plural}}', 'g'), plural)
@@ -157,6 +179,7 @@ async function addRoutes({vm, folder, singular, plural, pascalName}) {
             let route = Helpers.appRoot(`start/routes/${routeFolder}/routes.${plural}.js`)
             let data = await fs.readFileSync(routeFile);
             data = data.toString()
+                .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
                 .replace(new RegExp('{{group}}', 'g'), plural.toUpperCase())
                 .replace(new RegExp('{{plural}}', 'g'), plural)
                 .replace(new RegExp('{{middleware}}', 'g'), middleware)
@@ -239,7 +262,7 @@ async function generateModelString(vm, data, {columnTypes, tableName, pascalName
         .replace(new RegExp('{{tableName}}', 'g'), tableName)
         .replace('{{createdAt}}', columns.find(s => s === 'created_at') ? "'created_at'" : null)
         .replace('{{updatedAt}}', columns.find(s => s === 'updated_at') ? "'updated_at'" : null)
-        .replace('{{primaryColumn}}', primary ? primary['name'] : null)
+        .replace(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
         .replace('{{autoIncrement}}', primary ? !!primary['autoincrement'] : false)
         .replace('{{dates}}', dates.length ? `[\n   '${dates.join("',\n    '")}'\n]` : '[]')
         .replace('{{dateFormat}}', dateFormat)
@@ -333,11 +356,18 @@ async function generateControllerString(data, {
     /*Table Columns*/
     let filteredColumns = [];
     let requiredColumns = [];
-    // get columns except primary, created_at, updated_at
+    let primary = {};
+
+    // get columns except created_at, updated_at
     Object.keys(columnTypes).forEach(columnName => {
         if (!columnTypes[columnName].primary) {
             if (!['created_at', 'updated_at'].includes(columnName))
                 filteredColumns.push(columnName);
+        }
+        //Get primary column
+        if (columnTypes[columnName].primary) {
+            primary = columnTypes[columnName];
+            primary.name = columnName;
         }
         // get required columns
         if (!columnTypes[columnName].primary &&
@@ -365,6 +395,7 @@ async function generateControllerString(data, {
 
     vm.info(`${vm.icon("success")} Generate controller data.`);
     data = data.toString()
+        .replaceAll(new RegExp('{{primaryColumn}}', 'g'), _.get(primary, 'name'))
         .replace(new RegExp('{{serviceFolder}}', 'g'), serviceFolder)
         .replace(new RegExp('{{modelFolder}}', 'g'), modelFolder)
         .replace(new RegExp('{{singular}}', 'g'), singular)

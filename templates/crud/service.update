@@ -12,13 +12,13 @@ class Update {
   async execute(form) {
 
     const response = await {{pascalName}}Model.query(this.transaction)
-      .where('id', form.id).first();
+      .where('{{primaryColumn}}', form.{{primaryColumn}}).first();
 
     if (!response) throw new CustomException("{{pascalName}} not found", 400, "{{uppercase}}_NOT_FOUND")
 
     response.merge({
       ..._.pick(form, {{filteredColumns}}),
-      updated_by: this.user.id,
+      updated_by: this.user.{{primaryColumn}},
     })
     await response.save(this.transaction);
     return response;

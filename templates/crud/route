@@ -5,13 +5,13 @@ Route.group(() => {
   //{{plural}}
   Route.get("{{plural}}", '{{controllerFolder}}/{{pascalName}}Controller.index')
 
-  Route.get("{{plural}}/:id", '{{controllerFolder}}/{{pascalName}}Controller.show')
+  Route.get("{{plural}}/:{{primaryColumn}}", '{{controllerFolder}}/{{pascalName}}Controller.show')
 
-  Route.put('{{plural}}/:id', '{{controllerFolder}}/{{pascalName}}Controller.update')
+  Route.put('{{plural}}/:{{primaryColumn}}', '{{controllerFolder}}/{{pascalName}}Controller.update')
 
   Route.post('{{plural}}', '{{controllerFolder}}/{{pascalName}}Controller.create')
 
-  Route.delete('{{plural}}/:id', '{{controllerFolder}}/{{pascalName}}Controller.destroy')
+  Route.delete('{{plural}}/:{{primaryColumn}}', '{{controllerFolder}}/{{pascalName}}Controller.destroy')
 })
   .prefix('api/v1')
   .middleware("{{middleware}}")

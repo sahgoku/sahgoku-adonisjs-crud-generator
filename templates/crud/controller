@@ -73,7 +73,7 @@ class {{pascalName}}Controller extends Controller {
 
   async show({params, request, response, auth}) {
     const rules = {
-      id: 'required'
+      {{primaryColumn}}: 'required'
     }
     let form = await this.checkInputs(request, rules, params);
     if (form instanceof Error) {
@@ -101,7 +101,7 @@ class {{pascalName}}Controller extends Controller {
 
   async update({params, request, response, auth}) {
     const rules = {
-      id: 'required',
+      {{primaryColumn}}: 'required',
     }
     let form = await this.checkInputs(request, rules, params);
     if (form instanceof Error) {
@@ -130,7 +130,7 @@ class {{pascalName}}Controller extends Controller {
 
   async destroy({params, request, response, auth}) {
     const rules = {
-      id: 'required'
+      {{primaryColumn}}: 'required'
     }
     let form = await this.checkInputs(request, rules, params);
     if (form instanceof Error) {

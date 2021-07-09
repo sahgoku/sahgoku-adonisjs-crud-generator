@@ -10,7 +10,7 @@ class Destroy {
   }
 
   async execute(form) {
-    const response = await {{pascalName}}Model.query(this.transaction).where('id', form.id).first();
+    const response = await {{pascalName}}Model.query(this.transaction).where('{{primaryColumn}}', form.{{primaryColumn}}).first();
     if (!response) throw new CustomException("{{pascalName}} not found", 400, "{{uppercase}}_NOT_FOUND")
     await response.delete();
   }
