@@ -30,7 +30,7 @@ class CrudGeneratorCommand extends Command {
             await validateConnection(options.connection);
         }
 
-        let tableName = args.table.toLowerCase();
+        let tableName = args.table;
         const columnTypes = await tableColumns(tableName, options.connection);
         let singular = pluralize.singular(tableName);
         let plural = pluralize.plural(tableName);

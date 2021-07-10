@@ -28,7 +28,7 @@ class ModelGeneratorCommand extends Command {
       validateConnection(options.connection);
     }
 
-    let tableName = args.table.toLowerCase();
+    let tableName = args.table;
     let columnTypes = await tableColumns(tableName, options.connection);
 
     let singular = pluralize.singular(tableName);
