@@ -6,7 +6,7 @@
 [![Downloads](https://img.shields.io/npm/dt/@sahgoku/adonisjs-crud-generator)]()
 [![Github](https://img.shields.io/badge/GitHub-100000?&logo=github&logoColor=white)](https://github.com/sahgoku/sahgoku-adonisjs-crud-generator)
 
-This package allows you easily generate essentials files for making CRUD with an database table using legacy version
+This package allows you to easily generate essential files for making CRUD with a database table using legacy version
 of [AdonisJS](https://legacy.adonisjs.com) app. The package generates the following:
 
 - Routes
