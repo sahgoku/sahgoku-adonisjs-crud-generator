@@ -284,7 +284,7 @@ function getModel(vm, table_name) {
     if (_.isEmpty(files)) vm.error(`Model folder is empty!`);
     let item = _.find(files, item => require(item).table === table_name);
     if (!item) {
-        vm.error(`Model not found!`);
+        vm.error(`Model not found for table '${table_name}' !`);
         process.exit();
     }
     return 'App'.concat(item.slice(0, -3).substring(item.indexOf('/Models/')));
