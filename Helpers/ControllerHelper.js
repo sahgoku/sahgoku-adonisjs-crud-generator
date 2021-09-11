@@ -39,12 +39,12 @@ class ControllerHelper {
         }
     }
 
-    static async search(query, pagination, filter, select) {
+    static async search(query, pagination, filter, count, select) {
         filter = typeof filter === 'string' ? JSON.parse(filter) : filter
         pagination = typeof pagination === 'string'
             ? JSON.parse(pagination)
             : Object(pagination)
-        SearchFilterHelper.build(query, pagination, filter, select)
+        SearchFilterHelper.build(query, pagination, filter, count, select)
         if (pagination.page) {
             return query.paginate(pagination.page, pagination.rowsPerPage)
         }

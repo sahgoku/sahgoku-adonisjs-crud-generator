@@ -37,13 +37,13 @@ class SearchFilterHelper {
 
     }
 
-    static build(query, pagination, filter, select) {
+    static build(query, pagination, filter, count, select) {
         pagination = Object(pagination)
         const search = new SearchFilterHelper()
-        search.compose(query, filter, select, pagination.sortBy, pagination.descending)
+        search.compose(query, filter, count, select, pagination.sortBy, pagination.descending)
     }
 
-    compose(query, filter, select, sortBy, descending) {
+    compose(query, filter, count, select, sortBy, descending) {
         if (Object(filter) === filter)
             this.builder(this.whereBuilder(query, filter.operand), filter);
 
@@ -53,6 +53,10 @@ class SearchFilterHelper {
         }
         if (select) {
             query.select(select)
+        }
+        if (count) {
+            for (let relation of count)
+                query.withCount(`${relation} as size_${relation}`)
         }
         return query
     }

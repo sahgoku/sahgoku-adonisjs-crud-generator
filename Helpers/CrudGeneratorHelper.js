@@ -209,13 +209,14 @@ async function addModel({vm, folder, columnTypes, singular, tableName, pascalNam
         process.exit();
     }
 
-    data = await generateModelString(vm, data, {columnTypes, singular, tableName, pascalName});
-    await fs.writeFileSync(Helpers.appRoot(`app/Models/${folder + '/' + pascalName}.js`), data);
+    let modelFolder = `app/Models/${folder + '/' + pascalName}`;
+    data = await generateModelString(vm, data, modelFolder, {columnTypes, singular, tableName, pascalName});
+    await fs.writeFileSync(Helpers.appRoot(`${modelFolder}.js`), data);
     vm.info(`${vm.icon("success")} Generate model data`);
     return true;
 }
 
-async function generateModelString(vm, data, {columnTypes, tableName, pascalName}) {
+async function generateModelString(vm, data, modelFolder, {columnTypes, tableName, pascalName}) {
 
     let columns = Object.keys(columnTypes);
 
@@ -254,6 +255,9 @@ async function generateModelString(vm, data, {columnTypes, tableName, pascalName
      return this.belongsTo("${getModel(vm, column.primary_table)}", "${columnName}", "${column.primary_column}");
   }
 `;
+
+            addHasManyRelation(modelFolder, getModel(vm, column.primary_table));
+
         }
     });
 
@@ -274,6 +278,14 @@ async function generateModelString(vm, data, {columnTypes, tableName, pascalName
         .replace('{{hash}}', hash);
     return data;
 
+}
+
+async function addHasManyRelation(relatedModelFolder, folder) {
+
+    let data = await fs.readFileSync(`${Helpers.appRoot(folder)}`).toString();
+    let index = str.indexOf("static allowedRelationships")
+    // if (index === -1) return
+    // console.log({index: index})
 }
 
 /*Get Model name for an database table*/
