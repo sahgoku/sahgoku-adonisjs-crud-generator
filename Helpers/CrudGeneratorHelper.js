@@ -209,7 +209,7 @@ async function addModel({vm, folder, columnTypes, singular, tableName, pascalNam
         process.exit();
     }
 
-    let modelFolder = `app/Models/${folder + '/' + pascalName}`;
+    let modelFolder = `App/Models/${folder + '/' + pascalName}`;
     data = await generateModelString(vm, data, modelFolder, {columnTypes, singular, tableName, pascalName});
     await fs.writeFileSync(Helpers.appRoot(`${modelFolder}.js`), data);
     vm.info(`${vm.icon("success")} Generate model data`);
@@ -256,7 +256,7 @@ async function generateModelString(vm, data, modelFolder, {columnTypes, tableNam
   }
 `;
 
-            addHasManyRelation(modelFolder, getModel(vm, column.primary_table));
+            addHasManyRelation(vm, modelFolder, columnName, tableName, column);
 
         }
     });
@@ -280,12 +280,25 @@ async function generateModelString(vm, data, modelFolder, {columnTypes, tableNam
 
 }
 
-async function addHasManyRelation(relatedModelFolder, folder) {
+/*Add HasMany relations*/
+async function addHasManyRelation(vm, relatedModelFolder, columnName, tableName, column) {
+    let model;
+    let folder = Helpers.appRoot(model = getModel(vm, column.primary_table)).concat('.js');
+    let data = await fs.readFileSync(`${folder}`).toString();
 
-    let data = await fs.readFileSync(`${Helpers.appRoot(folder)}`).toString();
-    let index = str.indexOf("static allowedRelationships")
-    // if (index === -1) return
-    // console.log({index: index})
+    let index = data.indexOf("static allowedRelationships")
+    if (index === -1) index = data.indexOf("static get table()")
+    if (index === -1) return
+
+    let relation = camelCase(pluralize.plural(tableName));
+    let content = `${relation}() {
+    return this.hasMany("${relatedModelFolder}",
+      "${column.primary_column}", "${columnName}");
+  }\n\r`
+    var result = data.slice(0, index) + content + data.slice(index);
+    await fs.writeFileSync(`${folder}`, result);
+
+    vm.info(`Relation ${relation} add to ${model} model!`);
 }
 
 /*Get Model name for an database table*/
