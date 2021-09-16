@@ -5,8 +5,7 @@
 [![Downloads](https://img.shields.io/npm/dt/@sahgoku/adonisjs-crud-generator)]()
 [![Github](https://img.shields.io/badge/GitHub-100000?&logo=github&logoColor=white)](https://github.com/sahgoku/sahgoku-adonisjs-crud-generator)
 
-**Hello, I hope this is useful for your projects. I need your [feedback]((mailto:contact@jauressah.com)
-) to improve the tool. Thank you.**
+**Hello, I hope this is useful for your projects. I need your [feedback](mailto:contact@jauressah.com) to improve the tool. Thank you.**
 
 
 This package allows you to easily generate essential files for making CRUD with a database table using legacy version
