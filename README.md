@@ -84,7 +84,7 @@ following will be created :
 }
 ```
 
-- `list.js`
+- list.js
 
 ```
 'use strict';
@@ -108,7 +108,7 @@ class List {
 module.exports = List;
 ```
 
-- `create.js`
+- create.js
 
 ```
 'use strict';
@@ -135,7 +135,7 @@ class Create {
 module.exports = Create;
 ```
 
-- `update.js`
+- update.js
 
 ```
 'use strict';
@@ -169,7 +169,7 @@ class Update {
 module.exports = Update;
 ```
 
-- `show.js`
+- show.js
 
 ```
 'use strict';
@@ -203,7 +203,7 @@ class Show {
 module.exports = Show;
 ```
 
-- `destroy.js`
+- destroy.js
 
 ```
 'use strict';
