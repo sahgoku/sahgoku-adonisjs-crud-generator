@@ -25,10 +25,16 @@ of [AdonisJS](https://legacy.adonisjs.com) app. The package generates the follow
 
 ## Installation
 
-You can install the package via NPM:
+You can install the package via `npm`:
 
 ``` bash
 npm install @sahgoku/adonisjs-crud-generator
+```
+
+`yarn`:
+
+``` bash
+yarn add @sahgoku/adonisjs-crud-generator
 ```
 
 ## Setup
