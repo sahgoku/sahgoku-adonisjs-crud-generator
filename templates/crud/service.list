@@ -12,7 +12,7 @@ class List {
   async execute(payload) {
       let query = {{pascalName}}Model.query();
       ControllerHelper.populate(query, payload.populates);
-      return await ControllerHelper.search(query, payload.pagination, payload.filter, payload.count, payload.select);
+      return ControllerHelper.search(query, payload.pagination, payload.filter, payload.count, payload.select);
     }
 }
 

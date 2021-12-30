@@ -2,8 +2,10 @@ const {validate} = use('Validator')
 /**
  * @type Error
  */
+const Database = use('Database')
 const CustomException = use('CustomException')
 const SearchFilterHelper = use('SearchFilterHelper')
+const _ = require('lodash')
 
 class ControllerHelper {
     static getUserEventData(user) {
@@ -39,17 +41,37 @@ class ControllerHelper {
         }
     }
 
-    static async search(query, pagination, filter, count, select) {
+    static async search(query, pagination, filter, count, select, sum) {
         filter = typeof filter === 'string' ? JSON.parse(filter) : filter
         pagination = typeof pagination === 'string'
             ? JSON.parse(pagination)
             : Object(pagination)
-        SearchFilterHelper.build(query, pagination, filter, count, select)
+        SearchFilterHelper.build({query, pagination, filter, count, select})
+
         if (pagination.page) {
             return query.paginate(pagination.page, pagination.rowsPerPage)
         }
         return {data: await query.fetch()}
     }
+
+    static async sum(model, {filter, sum}) {
+        if (!sum) return
+        filter = typeof filter === 'string' ? JSON.parse(filter) : filter
+        sum = sum.reduce((acc, curr) => (acc[curr] = curr, acc), {})
+
+        let query = Database.from(`${model.table}`).select('id');
+        SearchFilterHelper.build({query, filter});
+
+        return await Database.from(`${model.table}`)
+            .sum(sum).whereIn('id', query);
+    }
+
+    static async fetch(model, query, {pagination, filter, count, select, sum}) {
+        let search = await this.search(query, pagination, filter, count, select, sum);
+        let sum_ = await this.sum(model, {filter, sum});
+        return {data: search, sum: sum_}
+    }
+
 }
 
 module.exports = ControllerHelper
