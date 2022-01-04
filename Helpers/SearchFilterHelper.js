@@ -31,6 +31,9 @@ class SearchFilterHelper {
                 isCalledFirstWhere = true
                 return query['where' + _.capitalize(suffix)](...arg)
             }
+            if ((suffix || '').toLowerCase() === 'has') {
+                return query[this.getMethod(operator)]((qb) => qb[this.getMethod('') + _.capitalize(suffix)](...arg))
+            }
             console.log('Method', this.getMethod(operator) + _.capitalize(suffix))
             return query[this.getMethod(operator) + _.capitalize(suffix)](...arg)
         }
@@ -43,8 +46,7 @@ class SearchFilterHelper {
     }
 
     compose(query, filter, count, select, pagination) {
-        if (Object(filter) === filter)
-            this.builder(this.whereBuilder(query, filter.operand), filter);
+        if (Object(filter) === filter) this.builder(this.whereBuilder(query, filter.operand), filter);
 
         if (pagination && pagination.sortBy && !this.isDeep(pagination.sortBy)) {
             query.clearOrder();
@@ -54,8 +56,7 @@ class SearchFilterHelper {
             query.select(select)
         }
         if (count) {
-            for (let relation of count)
-                query.withCount(`${relation} as size_${relation}`)
+            for (let relation of count) query.withCount(`${relation} as size_${relation}`)
         }
         return query
     }
@@ -70,16 +71,12 @@ class SearchFilterHelper {
                         .forEach((row) => {
                             this.builder(_where, row)
                         })
-
-
                 })
                 break
             case 'condition':
                 const value = this.getValue(filter.operand, filter.value)
                 //if (!value) break
                 const descriptor = this.getAccessor(filter.field)
-                console.log('descriptor', descriptor)
-                console.log('value', value)
                 const operand = this.getOperator(filter.operand)
                 if (descriptor.relation) {
                     where('has', descriptor.relation, (builder) => {
@@ -186,9 +183,7 @@ class SearchFilterHelper {
 
     getMethod(operator) {
         operator = operator.toLowerCase().trim();
-        return ['and', 'or', 'xor'].includes(operator)
-            ? `${operator}Where`
-            : 'where'
+        return ['and', 'or', 'xor'].includes(operator) ? `${operator}Where` : 'where'
     }
 }
 
