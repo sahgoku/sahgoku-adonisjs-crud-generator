@@ -41,16 +41,12 @@ class ControllerHelper {
         }
     }
 
-    static async search(query, pagination, filter, count, select, sum) {
+    static async search(query, pagination, filter, count, select) {
         filter = typeof filter === 'string' ? JSON.parse(filter) : filter
-        pagination = typeof pagination === 'string'
-            ? JSON.parse(pagination)
-            : Object(pagination)
+        pagination = typeof pagination === 'string' ? JSON.parse(pagination) : Object(pagination)
         SearchFilterHelper.build({query, pagination, filter, count, select})
 
-        if (pagination.page) {
-            return query.paginate(pagination.page, pagination.rowsPerPage)
-        }
+        if (pagination.page) return query.paginate(pagination.page, pagination.rowsPerPage)
         return {data: await query.fetch()}
     }
 
@@ -59,11 +55,11 @@ class ControllerHelper {
         filter = typeof filter === 'string' ? JSON.parse(filter) : filter
         sum = sum.reduce((acc, curr) => (acc[curr] = curr, acc), {})
 
-        let query = Database.from(`${model.table}`).select('id');
+        let query = model.query().select('id')
         SearchFilterHelper.build({query, filter});
 
-        return await Database.from(`${model.table}`)
-            .sum(sum).whereIn('id', query);
+        return Database.from(`${model.table}`)
+            .sum(sum).whereIn('id', query.query);
     }
 
     static async fetch(model, query, {pagination, filter, count, select, sum}) {
