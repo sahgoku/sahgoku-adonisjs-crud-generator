@@ -34,7 +34,7 @@ class SearchFilterHelper {
             if ((suffix || '').toLowerCase() === 'has') {
                 return query[this.getMethod(operator)]((qb) => qb[this.getMethod('') + _.capitalize(suffix)](...arg))
             }
-            console.log('Method', this.getMethod(operator) + _.capitalize(suffix))
+            // console.log('Method', this.getMethod(operator) + _.capitalize(suffix))
             return query[this.getMethod(operator) + _.capitalize(suffix)](...arg)
         }
 
@@ -85,6 +85,8 @@ class SearchFilterHelper {
                 } else if (_.isNull(value)) {
 
                     where(operand === '=' ? 'Null' : 'NotNull', descriptor.name, operand);
+                } else if (['Null', 'NotNull'].includes(operand)) {
+                    where(operand, descriptor.name, operand)
                 } else {
                     where('', descriptor.name, operand, value)
                 }
@@ -119,22 +121,35 @@ class SearchFilterHelper {
             case 'start':
             case 'end':
                 return 'ilike';
+            case 'not_contains':
+            case 'not-contains':
+                return 'not ilike';
             case 'lt':
             case '<':
                 return '<';
             case 'gt':
             case '>':
                 return '>';
+
             case 'lte':
             case '<=':
                 return '<=';
+
             case 'gte':
             case '>=':
                 return '>=';
+
+            case 'is_null':
+            case 'is-null':
+                return 'Null';
+
+            case 'is_not_null':
+            case 'is-not-null':
+                return 'NotNull';
+
             default:
                 return 'ilike';
         }
-
     }
 
     getValue(operand, value) {
@@ -164,6 +179,8 @@ class SearchFilterHelper {
             case 'like':
             case '%':
             case 'contains':
+            case 'not_contains':
+            case 'not-contains':
             default:
                 return `%${value || ''}%`
 
