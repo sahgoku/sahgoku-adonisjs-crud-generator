@@ -34,6 +34,9 @@ class SearchFilterHelper {
             if ((suffix || '').toLowerCase() === 'has') {
                 return query[this.getMethod(operator)]((qb) => qb[this.getMethod('') + _.capitalize(suffix)](...arg))
             }
+            if (['null', 'notnull'].includes((suffix || '').toLowerCase())) {
+                return query[this.getMethod('') + _.capitalize(suffix)](...arg)
+            }
             // console.log('Method', this.getMethod(operator) + _.capitalize(suffix))
             return query[this.getMethod(operator) + _.capitalize(suffix)](...arg)
         }
