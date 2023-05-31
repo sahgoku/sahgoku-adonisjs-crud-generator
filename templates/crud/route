@@ -1,17 +1,23 @@
 const Route = use('Route');
-const group = "{{group}}"
+const group = {name: "{{group}}", feminine: true}
+const CommonHelper = use('CommonHelper')
 
 Route.group(() => {
   //{{plural}}
   Route.get("{{plural}}", '{{controllerFolder}}/{{pascalName}}Controller.index')
+      .authorize('list_{{plural}}', `Liste ${CommonHelper.plural(group)}`, group.name)
 
   Route.get("{{plural}}/:{{primaryColumn}}", '{{controllerFolder}}/{{pascalName}}Controller.show')
+    .authorize('show_{{plural}}', `Visualisation d\'${CommonHelper.singular(group)}`, group.name)
 
   Route.put('{{plural}}/:{{primaryColumn}}', '{{controllerFolder}}/{{pascalName}}Controller.update')
+    .authorize('update_{{plural}}', `Mise à jour d\'${CommonHelper.singular(group)}`, group.name)
 
   Route.post('{{plural}}', '{{controllerFolder}}/{{pascalName}}Controller.create')
+    .authorize('create_{{plural}}', `Création d\'${CommonHelper.singular(group)}`, group.name)
 
   Route.delete('{{plural}}/:{{primaryColumn}}', '{{controllerFolder}}/{{pascalName}}Controller.destroy')
+      .authorize('delete_{{plural}}', `Suppression d\'${CommonHelper.singular(group)}`, group.name)
 })
   .prefix('api/v1')
   .middleware("{{middleware}}")
